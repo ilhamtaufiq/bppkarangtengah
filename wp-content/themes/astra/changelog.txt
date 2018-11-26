@@ -1,0 +1,185 @@
+v1.0.24
+# Improvement: Save the current theme version in the database so that it can be used for data processing on theme upgrades.
+
+v1.0.23
+# Improvement: Whitelabel from Astra Pro now updates the strings on Astra's welcome page as well.
+# Improvement: Renamed filter `astra_color_palletes` to `astra_color_palettes`. The older filter will keep working but it is recommended to change to the new filter.
+# Fix: Mobile navigation breakpoint not working on IE11 and Edge.
+
+v1.0.22
+# Improvement: Background Color picker with opacity option added the Customizer.
+# Fix: Divi Page builder preview for Tablet / Phone view not working.
+
+v1.0.21
+# Improvement: Updated the Toolset Types compatibility configuration.
+# Updated the theme screenshot.
+
+v1.0.20
+# New: Added filters for functions `astra_get_option()` and `astra_get_option_meta()`. This allows for modifying the theme options with very ease.
+# New: Added fullscreen support for any oEmbed markup.
+# New: Added filter 'astra_enable_default_fonts' to disable astra default font file.
+# New: Added filter 'astra_color_palletes' to set the default color palettes inside your color pickers in the Customizer.
+# Fix: SVG logos cannot be cropped hence this will fall back to resizing the logo with CSS when using a SVG logo.
+
+v1.0.19
+# New: Introducing an option where you can upload the Retina Logo.
+# New: Logo width option added.
+# Fixed: Title is not working for anspress questions shortcode.
+# Fixed: Accessibility, focus on navigation link, color not working as on hover
+# Fixed: Display correct page title When on Astra Settings Page.
+# Improvement: Register Astra meta box only for public post type.
+
+v1.0.18
+# New: Blog / Archive and Single Post Layout : Post Structure sortable option added to control the post title and post featured image.
+# New: Base Typography : Paragraph Margin Bottom option added to control all the paragraph's margin bottom.
+# New: Option to disable Footer widgets in page meta.
+
+v1.0.17
+# Improvement: Updated the latest google fonts. Also added a grunt command to make it easier to update the google fonts in the future.
+
+v1.0.16
+# Improvement: Added new filter `astra_render_fonts` to add the support for custom fonts.
+# Improvement: Added new action `astra_customizer_font_list` to add the custom fonts list into customizer.
+# Improvement: Font size, Font weight, Line height updated for h1 to h6 and paragraph for Editor style.
+# Fixed: Default textarea height for contact form 7(https://wordpress.org/plugins/contact-form-7/) removed.
+# Improvement: Colors & Backgrounds for body renamed as Base Colors.
+# Improvement: Colors & Backgrounds - Theme Color / Link Color place at the first position.
+# Removed: Unwanted functions from template-tags.php.
+
+v1.0.15
+# New: Font family, font weight and text transform options implemented for Headings.
+# New: Footer Bar Color options Implemented.
+# New: Footer Widgets Color options Implemented.
+# Improvement: Added new filter `astra_the_post_id` to Enable or Disable title of archive posts.
+# Fixed: System fonts should not call for googleapi.
+# Fixed: Featured images not showing up on Page after v1.0.14
+# Fixed: Notice - Getting property of Non-object variable with activated Visual Composer.
+
+v1.0.14
+# Improvement: Added new filter `astra_blog_post_meta_enabled` to Enable or Disable meta on archive pages.
+# Improvement: Added new filter `astra_single_post_meta_enabled` to Enable or Disable meta on single post.
+# Fixed: Regression in v1.0.14 which caused page titles to be displayed on some of the pages.
+
+v1.0.13
+# New: When using page builders Beaver Builder or Elementor on a new page - Page layout will be changed to "Full width / Stretched" and for Visual Composer the page layout will be changed to "Full width / Contained" Also the title bar will be disabled hence reducing the number of clicks needed to get full-width pages.
+# Improvement: Added new filter `astra_post_link_enabled` to Enable or Disable read more links on archive pages.
+# Improvement: Renamed the layout option `Plain` with `Full Width / Contained`
+# Improvement: Renamed the layout option `Page Builder` with `Full Width / Streched`
+# Fixed: Extra space at above with `Full Width / Streched` Layout on page.
+# Fixed: Updated the TinyMCE editor's width to be 100%
+
+v1.0.12
+# New: 'Footer Widgets' added in customizer.
+# Improvement: 'astra_pagination_enabled' filter added for Enable or Disable blog/archive pagination.
+# Improvement: 'astra_featured_image_enabled' filter added for Enable or Disable featured image.
+# Improvement: Smooth font Rendering style updated.
+# Fixed: Admin notice issue with Astra name.
+# Fixed: Fetal error while bb lite version is activated.
+
+v1.0.11
+# Removed: accessibility-ready tag until the final review is done.
+
+v1.0.10
+# New: 'Get more with Astra Pro' added in customizer.
+# Fixed: Warning for sanitize_html callback.
+
+v1.0.9
+# New: Added accessibility ready support.
+
+v1.0.8
+# Improvement: Page Builder Compatibilty Styles.
+# Improvement: Slider param implemented for line-height.
+# Fixed: String Updated from "Inherit" to "Default" for Body Typography.
+
+v1.0.7
+# Improvement: Moved 'Buttons' section from panel 'miscellaneous' to parent.
+# Improvement: Site logo, title, tagline spacing improved.
+# Improvement: Menu toggle line height issue fixed for small devices.
+# Removed: Unwanted dyanamic css filter.
+
+v1.0.6
+# Enhancement: Combined CSS files 'blog-layout-1' and 'astra-font' files in style.css.
+# Enhancement: Combined JS files 'flexibility', 'navigation' and 'skip-link-focus-fix' files in style.js
+# Enhancement: Used astra_get_option() to set default customizer options instead of representative Astra_Theme_Options::defaults().
+# Fixed: RTL support for minified css files.
+# New: Typography option for Archive Summary Box.
+# Enhancement: Updated default heading font-size support for small devices.
+
+v1.0.5.2
+# Enhancement: Updated theme default screenshot.png.
+# Enhancement: Used filter 'after_setup_theme' to set default theme options instead of action 'init'.
+
+v1.0.5.1
+# Fixed: Use &hellip; instead of ...
+# Fixed: Use sanitize_html_class to sanitize HTML class
+# Fixed: Remove comment-list from add_theme_support( 'html5' )
+# Fixed: Escaping implemented for Dynamic CSS
+
+v1.0.5
+# Enhancement: Updated customizer option prefix from 'ast-settings' with 'astra-settings'
+# Fixed: PHP Notice - Array to string conversion
+# Fixed: Change date('Y') to date_i18n(__('Y','textdomain'))
+# Fixed: Remove comment-form from add_theme_support( 'html5' )
+# Fixed: `excerpt_more` filter affecting on admin side.
+# Fixed: Missing escaping variable updated.
+
+v1.0.4.1
+# Fixed: Warning on first time activates the theme.
+
+v1.0.4
+# New: Responsive Typography Param implemented.
+# New: Added option for Menu Label on Small Devices.
+# New: Added option for Mobile Header Alignment.
+# Improvement: Updated primary submenu navigation icon.
+# Improvement: Updated Small Devices menu navigation styling.
+# Removed: Default Small Devices Menu Label - 'Menu'.
+
+v1.0.3.1
+# Removed functions that override WordPress global's.
+
+v1.0.3
+# Enhancement: Removed option _astra_auto_version and used option ASTRA_THEME_SETTINGS for auto storing latest theme version.
+# Fixed: Content Layout meta working on beaver builder page/post.
+
+v1.0.2
+# New: Added Beaver Themer support.
+# New: Added option to disable primary header navigation.
+# New: Added widget area support for header & footer.
+# New: Added editor style minification file support.
+# New: Added header layouts.
+# Improvement: Updated responsive header styling.
+# Improvement: Removed unwanted minified & unminified files.
+# Improvement: Removed unwanted constants.
+# Improvement: Removed unused variables when a classes are initialised.
+# Improvement: Moved hook astra_body_bottom at the top of the wp_footer hook.
+# Improvement: Renamed the uabb theme compatibility functions to not include redundant prefix.
+# Improvement: Used get_bloginfo() instead of get_option('blogname').
+
+v1.0.1.1
+# Added: Welcome screen for in theme page
+# Added: Theme page support in base theme.
+# Removed: Unwanted add_theme_supports.
+# Removed: Unused function 'astra_the_archive_title()'
+# Removed: 'Walker_Nav_Menu' & 'Walker_Page' classes
+# Fixed: Theme page settings save message jerk issue.
+
+v1.0.1
+# Fixed: Fixed correct usage of esc_attr() and esc_html() functions.
+# Added license and attribution to all the assets included in the theme.
+# Properly use get_search_form() function.
+# Updated Theme Screenshot.
+# Updated Theme URI.
+# Changed text-domain as `astra`
+# Added flexibility unminified file.
+# Tweaked the code to skip need to override WordPress globals.
+# Fixed Terniary condition middle omittion not working in PHP < 5.3
+# Removed: All functionality related to child theme creation.
+# Removed: Code that removes default customiser control.
+# Removed: Registering admin menu from the theme.
+# Removed: Customizer & Meta notice for `Page Builder` content layout.
+# Removed: Reset customizer from theme.
+# Removed: All code related to on-boarding from theme.
+# Removed: All unused and unnecessary functions.
+
+v1.0.0
+# Initial release
