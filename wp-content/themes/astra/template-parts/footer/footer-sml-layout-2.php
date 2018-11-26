@@ -4,29 +4,27 @@
  *
  * @package     Astra
  * @author      Astra
- * @copyright   Copyright (c) 2017, Astra
- * @link        http://wpastra.com/
+ * @copyright   Copyright (c) 2018, Astra
+ * @link        https://wpastra.com/
  * @since       Astra 1.0.0
  */
 
-$section_1    = astra_get_small_footer( 'footer-sml-section-1' );
-$section_2    = astra_get_small_footer( 'footer-sml-section-2' );
-$sections     = 0;
-$sections     = $sections + count( $section_1 );
-$sections     = $sections + count( $section_2 );
+$section_1 = astra_get_small_footer( 'footer-sml-section-1' );
+$section_2 = astra_get_small_footer( 'footer-sml-section-2' );
+$sections  = 0;
+
+if ( '' != $section_1 ) {
+	$sections++;
+}
+
+if ( '' != $section_2 ) {
+	$sections++;
+}
 
 switch ( $sections ) {
 
 	case '2':
 			$section_class = 'ast-small-footer-section-equally ast-col-md-6 ast-col-xs-12';
-		break;
-
-	case '3':
-			$section_class = 'ast-small-footer-section-equally ast-col-md-4 ast-col-xs-12';
-		break;
-
-	case '4':
-			$section_class = 'ast-small-footer-section-equally ast-col-md-3 ast-col-xs-12';
 		break;
 
 	case '1':
@@ -42,7 +40,7 @@ switch ( $sections ) {
 		<div class="ast-container">
 			<div class="ast-small-footer-wrap" >
 					<div class="ast-row ast-flex">
-				
+
 					<?php if ( $section_1 ) : ?>
 						<div class="ast-small-footer-section ast-small-footer-section-1 <?php echo esc_attr( $section_class ); ?>" >
 							<?php

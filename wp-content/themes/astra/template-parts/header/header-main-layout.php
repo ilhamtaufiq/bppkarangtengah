@@ -9,8 +9,8 @@
  *
  * @package     Astra
  * @author      Astra
- * @copyright   Copyright (c) 2017, Astra
- * @link        http://wpastra.com/
+ * @copyright   Copyright (c) 2018, Astra
+ * @link        https://wpastra.com/
  * @since       Astra 1.0.0
  */
 
@@ -22,9 +22,7 @@
 		<div class="ast-container">
 
 			<div class="ast-flex main-header-container">
-				
 				<?php astra_masthead_content(); ?>
-				
 			</div><!-- Main Header Container -->
 		</div><!-- ast-row -->
 		<?php astra_main_header_bar_bottom(); ?>

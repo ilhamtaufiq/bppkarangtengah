@@ -54,7 +54,7 @@ if ( ! class_exists( 'Astra_Site_Origin' ) ) :
 		 * @since 1.0.0
 		 */
 		function add_styles( $assets ) {
-			$assets['css']['astra-site-origin'] = 'site-compatible/site-origin';
+			$assets['css']['astra-site-origin'] = 'compatibility/site-origin';
 			return $assets;
 		}
 

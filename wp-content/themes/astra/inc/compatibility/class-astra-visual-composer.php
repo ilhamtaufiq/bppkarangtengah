@@ -43,8 +43,8 @@ if ( ! class_exists( 'Astra_Visual_Composer' ) ) :
 		 * Constructor
 		 */
 		public function __construct() {
-			add_action( 'wp',                        array( $this, 'vc_default_setting' ), 20 );
-			add_action( 'do_meta_boxes',             array( $this, 'vc_default_setting' ), 20 );
+			add_action( 'wp', array( $this, 'vc_default_setting' ), 20 );
+			add_action( 'do_meta_boxes', array( $this, 'vc_default_setting' ), 20 );
 			add_action( 'vc_frontend_editor_render', array( $this, 'vc_frontend_default_setting' ) );
 		}
 
@@ -56,6 +56,10 @@ if ( ! class_exists( 'Astra_Visual_Composer' ) ) :
 		 * @return void
 		 */
 		function vc_update_meta_setting( $id ) {
+
+			if ( false == astra_enable_page_builder_compatibility() || 'post' == get_post_type() ) {
+				return;
+			}
 
 			update_post_meta( $id, '_astra_content_layout_flag', 'disabled' );
 			update_post_meta( $id, 'site-post-title', 'disabled' );
@@ -82,7 +86,7 @@ if ( ! class_exists( 'Astra_Visual_Composer' ) ) :
 		function vc_frontend_default_setting() {
 
 			global $post;
-			$id = astra_get_post_id();
+			$id                = astra_get_post_id();
 			$page_builder_flag = get_post_meta( $id, '_astra_content_layout_flag', true );
 
 			if ( empty( $page_builder_flag ) ) {

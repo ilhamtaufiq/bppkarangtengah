@@ -4,8 +4,8 @@
  *
  * @package     Astra
  * @author      Astra
- * @copyright   Copyright (c) 2017, Astra
- * @link        http://wpastra.com/
+ * @copyright   Copyright (c) 2018, Astra
+ * @link        https://wpastra.com/
  * @since       Astra 1.0.0
  */
 
@@ -71,7 +71,7 @@ if ( ! class_exists( 'Astra_Customizer_Partials' ) ) {
 			$site_tagline = astra_get_option( 'display-site-tagline' );
 
 			if ( true == $site_tagline ) {
-				return get_bloginfo( 'description' );
+				return get_bloginfo( 'description', 'display' );
 			}
 		}
 
@@ -83,7 +83,7 @@ if ( ! class_exists( 'Astra_Customizer_Partials' ) ) {
 			$site_title = astra_get_option( 'display-site-title' );
 
 			if ( true == $site_title ) {
-				return get_bloginfo( 'name' );
+				return get_bloginfo( 'name', 'display' );
 			}
 		}
 
@@ -115,7 +115,7 @@ if ( ! class_exists( 'Astra_Customizer_Partials' ) ) {
 			return do_shortcode( $output );
 		}
 	}
-}// End if().
+}
 
 /**
  * Kicking this off by calling 'get_instance()' method

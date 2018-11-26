@@ -4,8 +4,8 @@
  *
  * @package     Astra
  * @author      Astra
- * @copyright   Copyright (c) 2017, Astra
- * @link        http://wpastra.com/
+ * @copyright   Copyright (c) 2018, Astra
+ * @link        https://wpastra.com/
  * @since       Astra 1.0.0
  */
 
@@ -22,7 +22,7 @@ if ( ! function_exists( 'astra_widget_tag_cloud_args' ) ) :
 	 */
 	function astra_widget_tag_cloud_args( $args = array() ) {
 
-		$sidebar_link_font_size = astra_get_option( 'font-size-body' );
+		$sidebar_link_font_size            = astra_get_option( 'font-size-body' );
 		$sidebar_link_font_size['desktop'] = ( '' != $sidebar_link_font_size['desktop'] ) ? $sidebar_link_font_size['desktop'] : 15;
 
 		$args['smallest'] = intval( $sidebar_link_font_size['desktop'] ) - 2;
@@ -79,7 +79,8 @@ if ( ! function_exists( 'astra_widgets_init' ) ) :
 		 */
 		register_sidebar(
 			apply_filters(
-				'astra_widgets_init', array(
+				'astra_widgets_init',
+				array(
 					'name'          => esc_html__( 'Main Sidebar', 'astra' ),
 					'id'            => 'sidebar-1',
 					'description'   => '',
@@ -96,7 +97,8 @@ if ( ! function_exists( 'astra_widgets_init' ) ) :
 		 */
 		register_sidebar(
 			apply_filters(
-				'astra_header_widgets_init', array(
+				'astra_header_widgets_init',
+				array(
 					'name'          => esc_html__( 'Header', 'astra' ),
 					'id'            => 'header-widget',
 					'description'   => '',
@@ -113,7 +115,8 @@ if ( ! function_exists( 'astra_widgets_init' ) ) :
 		 */
 		register_sidebar(
 			apply_filters(
-				'astra_footer_1_widgets_init', array(
+				'astra_footer_1_widgets_init',
+				array(
 					'name'          => esc_html__( 'Footer Bar Section 1', 'astra' ),
 					'id'            => 'footer-widget-1',
 					'description'   => '',
@@ -127,7 +130,8 @@ if ( ! function_exists( 'astra_widgets_init' ) ) :
 
 		register_sidebar(
 			apply_filters(
-				'astra_footer_2_widgets_init', array(
+				'astra_footer_2_widgets_init',
+				array(
 					'name'          => esc_html__( 'Footer Bar Section 2', 'astra' ),
 					'id'            => 'footer-widget-2',
 					'description'   => '',

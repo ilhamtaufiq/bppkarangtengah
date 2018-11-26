@@ -4,8 +4,8 @@
  *
  * @package     Astra
  * @author      Astra
- * @copyright   Copyright (c) 2017, Astra
- * @link        http://wpastra.com/
+ * @copyright   Copyright (c) 2018, Astra
+ * @link        https://wpastra.com/
  * @since       Astra 1.0.0
  */
 
@@ -25,20 +25,21 @@ if ( ! function_exists( 'astra_default_strings' ) ) {
 	function astra_default_strings( $key, $echo = true ) {
 
 		$defaults = apply_filters(
-			'astra_default_strings', array(
+			'astra_default_strings',
+			array(
 
 				// Header.
 				'string-header-skip-link'                => __( 'Skip to content', 'astra' ),
 
 				// 404 Page Strings.
-				'string-404-sub-title'                   => __( 'It looks like the link pointing here was faulty. May be try searching?', 'astra' ),
+				'string-404-sub-title'                   => __( 'It looks like the link pointing here was faulty. Maybe try searching?', 'astra' ),
 
 				// Search Page Strings.
 				'string-search-nothing-found'            => __( 'Nothing Found', 'astra' ),
 				'string-search-nothing-found-message'    => __( 'Sorry, but nothing matched your search terms. Please try again with some different keywords.', 'astra' ),
 				'string-full-width-search-message'       => __( 'Start typing and press enter to search', 'astra' ),
-				'string-full-width-search-placeholder'   => __( 'Start Typing&hellip;', 'astra' ),
-				'string-header-cover-search-placeholder' => __( 'Start Typing&hellip;', 'astra' ),
+				'string-full-width-search-placeholder'   => __( 'Search &hellip;', 'astra' ),
+				'string-header-cover-search-placeholder' => __( 'Search &hellip;', 'astra' ),
 				'string-search-input-placeholder'        => __( 'Search &hellip;', 'astra' ),
 
 				// Comment Template Strings.
@@ -79,6 +80,16 @@ if ( ! function_exists( 'astra_default_strings' ) ) {
 			)
 		);
 
+		if ( is_rtl() ) {
+			$defaults['string-blog-navigation-next']     = __( 'Next Page', 'astra' ) . ' <span class="ast-left-arrow">&larr;</span>';
+			$defaults['string-blog-navigation-previous'] = '<span class="ast-right-arrow">&rarr;</span> ' . __( 'Previous Page', 'astra' );
+
+			/* translators: 1: Post type label */
+			$defaults['string-single-navigation-next'] = __( 'Next %s', 'astra' ) . ' <span class="ast-left-arrow">&larr;</span>';
+			/* translators: 1: Post type label */
+			$defaults['string-single-navigation-previous'] = '<span class="ast-right-arrow">&rarr;</span> ' . __( 'Previous %s', 'astra' );
+		}
+
 		$output = isset( $defaults[ $key ] ) ? $defaults[ $key ] : '';
 
 		/**
@@ -90,4 +101,4 @@ if ( ! function_exists( 'astra_default_strings' ) ) {
 			return $output;
 		}
 	}
-}// End if().
+}

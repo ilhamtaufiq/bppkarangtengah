@@ -12,7 +12,7 @@
 
 <?php astra_entry_before(); ?>
 
-<article itemtype="http://schema.org/CreativeWork" itemscope="itemscope" id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
+<article itemtype="https://schema.org/CreativeWork" itemscope="itemscope" id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
 
 	<?php astra_entry_top(); ?>
 
@@ -31,16 +31,17 @@
 				sprintf(
 					wp_kses(
 						/* translators: %s: Name of current post. */
-						 __( 'Continue reading %s', 'astra' ) . ' <span class="meta-nav">&rarr;</span>', array(
-							 'span' => array(
-								 'class' => array(),
-							 ),
-						 )
+						__( 'Continue reading %s', 'astra' ) . ' <span class="meta-nav">&rarr;</span>',
+						array(
+							'span' => array(
+								'class' => array(),
+							),
+						)
 					),
 					the_title( '<span class="screen-reader-text">"', '"</span>', false )
 				)
 			);
-		?>
+			?>
 
 		<?php astra_entry_content_after(); ?>
 
@@ -53,7 +54,7 @@
 					'link_after'  => '</span>',
 				)
 			);
-		?>
+			?>
 	</div><!-- .entry-content .clear -->
 
 	<footer class="entry-footer">

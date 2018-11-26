@@ -3,8 +3,8 @@
  * Astra Pro Customizer Section
  *
  * @package   Astra
- * @copyright Copyright (c) 2017, Astra
- * @link      http://wpastra.com/
+ * @copyright Copyright (c) 2018, Astra
+ * @link      https://wpastra.com/
  * @since     Astra 1.0.10
  */
 
@@ -32,7 +32,7 @@ if ( ! class_exists( 'Astra_Pro_Customizer' ) ) {
 		 * @access public
 		 * @var    string
 		 */
-		public $type     = 'astra-pro';
+		public $type = 'astra-pro';
 
 		/**
 		 * Custom pro button URL.
@@ -41,7 +41,7 @@ if ( ! class_exists( 'Astra_Pro_Customizer' ) ) {
 		 * @access public
 		 * @var    string
 		 */
-		public $pro_url  = '';
+		public $pro_url = '';
 
 		/**
 		 * Add custom parameters to pass to the JS via JSON.
@@ -64,7 +64,7 @@ if ( ! class_exists( 'Astra_Pro_Customizer' ) ) {
 		 * @return void
 		 */
 		protected function render_template() {
-		?>
+			?>
 		<li id="accordion-section-{{ data.id }}" class="accordion-section control-section control-section-{{ data.type }} cannot-expand control-section-default">
 			<h3 class="wp-ui-highlight">
 				<# if ( data.title && data.pro_url ) { #>
@@ -72,8 +72,8 @@ if ( ! class_exists( 'Astra_Pro_Customizer' ) ) {
 				<# } #>
 			</h3>
 		</li>
-		<?php
+			<?php
 		}
 	}
 
-} // End if().
+}

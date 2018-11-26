@@ -17,7 +17,7 @@
 <?php astra_head_top(); ?>
 <meta charset="<?php bloginfo( 'charset' ); ?>">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="profile" href="http://gmpg.org/xfn/11">
+<link rel="profile" href="https://gmpg.org/xfn/11">
 
 <?php astra_head_bottom(); ?>
 <?php wp_head(); ?>
@@ -28,11 +28,11 @@
 <?php astra_body_top(); ?>
 <div id="page" class="hfeed site">
 	<a class="skip-link screen-reader-text" href="#content"><?php echo esc_html( astra_default_strings( 'string-header-skip-link', false ) ); ?></a>
-	
+
 	<?php astra_header_before(); ?>
 
 	<?php astra_header(); ?>
-	
+
 	<?php astra_header_after(); ?>
 
 	<?php astra_content_before(); ?>

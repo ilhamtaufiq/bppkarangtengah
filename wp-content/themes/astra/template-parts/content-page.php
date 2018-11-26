@@ -12,7 +12,7 @@
 
 <?php astra_entry_before(); ?>
 
-<article itemtype="http://schema.org/CreativeWork" itemscope="itemscope" id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
+<article itemtype="https://schema.org/CreativeWork" itemscope="itemscope" id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
 
 	<?php astra_entry_top(); ?>
 
@@ -40,7 +40,7 @@
 					'link_after'  => '</span>',
 				)
 			);
-		?>
+			?>
 
 	</div><!-- .entry-content .clear -->
 
@@ -55,7 +55,7 @@
 			'<footer class="entry-footer"><span class="edit-link">',
 			'</span></footer><!-- .entry-footer -->'
 		);
-	?>
+		?>
 
 	<?php astra_entry_bottom(); ?>
 

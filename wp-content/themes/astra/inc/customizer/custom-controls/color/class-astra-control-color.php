@@ -6,8 +6,8 @@
  *
  * @package     Astra
  * @author      Astra
- * @copyright   Copyright (c) 2017, Astra
- * @link        http://wpastra.com/
+ * @copyright   Copyright (c) 2018, Astra
+ * @link        https://wpastra.com/
  * @since       1.0.0
  */
 
@@ -70,7 +70,6 @@ class Astra_Control_Color extends WP_Customize_Control {
 		$css_uri = ASTRA_THEME_URI . 'inc/customizer/custom-controls/color/';
 		$js_uri  = ASTRA_THEME_URI . 'inc/customizer/custom-controls/color/';
 
-		wp_enqueue_script( 'astra-color-alpha', $js_uri . 'wp-color-picker-alpha.js', array( 'jquery', 'customize-base', 'wp-color-picker' ), ASTRA_THEME_VERSION, true );
 		wp_enqueue_script( 'astra-color', $js_uri . 'color.js', array( 'astra-color-alpha' ), ASTRA_THEME_VERSION, true );
 		wp_enqueue_style( 'astra-color', $css_uri . 'color.css', null, ASTRA_THEME_VERSION );
 	}
@@ -98,17 +97,17 @@ class Astra_Control_Color extends WP_Customize_Control {
 			}
 			defaultValueAttr = ' data-default-color=' + defaultValue; // Quotes added automatically.
 		} #>
-		<label>
-			<# if ( data.label ) { #>
+		<# if ( data.label ) { #>
+			<label>
 				<span class="customize-control-title">{{{ data.label }}}</span>
-			<# } #>
-			<# if ( data.description ) { #>
-				<span class="description customize-control-description">{{{ data.description }}}</span>
-			<# } #>
-			<div class="customize-control-content">
-				<input class="ast-color-picker-alpha color-picker-hex" type="text" maxlength="7" data-alpha="true" placeholder="{{ defaultValue }}" {{ defaultValueAttr }} value="{{data.value}}" />
-			</div>
-		</label>
+			</label>
+		<# } #>
+		<# if ( data.description ) { #>
+			<span class="description customize-control-description">{{{ data.description }}}</span>
+		<# } #>
+		<div class="customize-control-content">
+			<input class="ast-color-picker-alpha color-picker-hex" type="text" maxlength="7" data-alpha="true" placeholder="{{ defaultValue }}" {{ defaultValueAttr }} value="{{data.value}}" />
+		</div>
 
 		<?php
 	}

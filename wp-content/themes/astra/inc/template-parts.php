@@ -4,20 +4,21 @@
  *
  * @package     Astra
  * @author      Astra
- * @copyright   Copyright (c) 2017, Astra
- * @link        http://wpastra.com/
+ * @copyright   Copyright (c) 2018, Astra
+ * @link        https://wpastra.com/
  * @since       Astra 1.0.0
  */
 
-add_action( 'astra_masthead_toggle_buttons',    'astra_masthead_toggle_buttons_primary' );
-add_action( 'astra_masthead',                   'astra_masthead_primary_template' );
-add_filter( 'wp_page_menu_args',                'astra_masthead_custom_page_menu_items', 10, 2 );
-add_filter( 'wp_nav_menu_items',                'astra_masthead_custom_nav_menu_items', 10, 2 );
-add_action( 'astra_footer_content',             'astra_footer_small_footer_template', 5 );
-add_action( 'astra_entry_content_single',       'astra_entry_content_single_template' );
-add_action( 'astra_entry_content_blog',         'astra_entry_content_blog_template' );
-add_action( 'astra_entry_content_404_page',     'astra_entry_content_404_page_template' );
-add_action( 'astra_footer_content',             'astra_advanced_footer_markup', 1 );
+add_action( 'astra_masthead_toggle_buttons', 'astra_masthead_toggle_buttons_primary' );
+add_action( 'astra_masthead', 'astra_masthead_primary_template' );
+add_filter( 'wp_page_menu_args', 'astra_masthead_custom_page_menu_items', 10, 2 );
+add_filter( 'wp_nav_menu_items', 'astra_masthead_custom_nav_menu_items', 10, 2 );
+add_action( 'astra_footer_content', 'astra_footer_small_footer_template', 5 );
+add_action( 'astra_entry_content_single', 'astra_entry_content_single_template' );
+add_action( 'astra_entry_content_blog', 'astra_entry_content_blog_template' );
+add_action( 'astra_entry_content_404_page', 'astra_entry_content_404_page_template' );
+add_action( 'astra_footer_content', 'astra_advanced_footer_markup', 1 );
+add_action( 'astra_masthead_content', 'astra_header_custom_item_outside_menu', 10 );
 
 /**
  * Header Custom Menu Item
@@ -31,24 +32,29 @@ if ( ! function_exists( 'astra_masthead_get_menu_items' ) ) :
 	 *
 	 * @see astra_masthead_get_menu_items
 	 * @see astra_masthead_custom_nav_menu_items
+	 * @param boolean $display_outside_markup Outside / Inside markup.
 	 *
 	 * @since 1.0.0
 	 */
-	function astra_masthead_get_menu_items() {
+	function astra_masthead_get_menu_items( $display_outside_markup = false ) {
 
 		// Get selected custom menu items.
-		$markup   = '';
-		$sections = astra_get_dynamic_header_content( 'header-main-rt-section' );
+		$markup = '';
+
+		$section                    = astra_get_option( 'header-main-rt-section' );
+		$sections                   = astra_get_dynamic_header_content( 'header-main-rt-section' );
 		$disable_primary_navigation = astra_get_option( 'disable-primary-nav' );
-		$html_element = 'li';
-		if ( $disable_primary_navigation ) {
+		$html_element               = 'li';
+
+		if ( $disable_primary_navigation || $display_outside_markup ) {
 			$html_element = 'div';
 		}
 
 		if ( array_filter( $sections ) ) {
 			ob_start();
+			$menu_item_classes = apply_filters( 'astra_masthead_custom_menu_item', array( 'ast-masthead-custom-menu-items', $section . '-custom-menu-item' ), $section );
 			?>
-			<<?php echo esc_attr( $html_element ); ?> class="ast-masthead-custom-menu-items">
+			<<?php echo esc_attr( $html_element ); ?> class="<?php echo esc_attr( join( ' ', $menu_item_classes ) ); ?>">
 				<?php
 				foreach ( $sections as $key => $value ) {
 					if ( ! empty( $value ) ) {
@@ -84,7 +90,7 @@ if ( ! function_exists( 'astra_masthead_custom_page_menu_items' ) ) :
 	 */
 	function astra_masthead_custom_page_menu_items( $args ) {
 
-		if ( isset( $args['theme_location'] ) ) {
+		if ( isset( $args['theme_location'] ) && ! astra_get_option( 'header-display-outside-menu' ) ) {
 
 			if ( 'primary' === $args['theme_location'] ) {
 
@@ -120,7 +126,7 @@ if ( ! function_exists( 'astra_masthead_custom_nav_menu_items' ) ) :
 	 */
 	function astra_masthead_custom_nav_menu_items( $items, $args ) {
 
-		if ( isset( $args->theme_location ) ) {
+		if ( isset( $args->theme_location ) && ! astra_get_option( 'header-display-outside-menu' ) ) {
 
 			if ( 'primary' === $args->theme_location ) {
 
@@ -154,35 +160,38 @@ if ( ! function_exists( 'astra_masthead_toggle_buttons_primary' ) ) {
 	function astra_masthead_toggle_buttons_primary() {
 
 		$disable_primary_navigation = astra_get_option( 'disable-primary-nav' );
-		$custom_header_section = astra_get_option( 'header-main-rt-section' );
+		$custom_header_section      = astra_get_option( 'header-main-rt-section' );
+		$display_outside_menu       = astra_get_option( 'header-display-outside-menu' );
 
-		if ( ! $disable_primary_navigation || 'none' != $custom_header_section ) {
-			$menu_title = trim( apply_filters( 'astra_main_menu_toggle_label', astra_get_option( 'header-main-menu-label' ) ) );
-			$menu_icon  = apply_filters( 'astra_main_menu_toggle_icon', 'menu-toggle-icon' );
-			$menu_label_class = '';
+		if ( ! $disable_primary_navigation || ( 'none' != $custom_header_section && ! $display_outside_menu ) ) {
+			$menu_title          = trim( apply_filters( 'astra_main_menu_toggle_label', astra_get_option( 'header-main-menu-label' ) ) );
+			$menu_icon           = apply_filters( 'astra_main_menu_toggle_icon', 'menu-toggle-icon' );
+			$menu_label_class    = '';
 			$screen_reader_title = __( 'Main Menu', 'astra' );
 			if ( '' !== $menu_title ) {
-				$menu_label_class = 'ast-menu-label';
+				$menu_label_class    = 'ast-menu-label';
 				$screen_reader_title = $menu_title;
 			}
-		?>
+
+			$menu_label_class = apply_filters( 'astra_main_menu_toggle_classes', $menu_label_class );
+			?>
 		<div class="ast-button-wrap">
 			<button type="button" class="menu-toggle main-header-menu-toggle <?php echo esc_attr( $menu_label_class ); ?>" rel="main-menu" aria-controls='primary-menu' aria-expanded='false'>
 				<span class="screen-reader-text"><?php echo esc_html( $screen_reader_title ); ?></span>
-				<i class="<?php echo esc_attr( $menu_icon ); ?>"></i>
+				<span class="<?php echo esc_attr( $menu_icon ); ?>"></span>
 				<?php if ( '' != $menu_title ) { ?>
 
-					<div class="mobile-menu-wrap">
+					<span class="mobile-menu-wrap">
 						<span class="mobile-menu"><?php echo esc_html( $menu_title ); ?></span>
-					</div>
+					</span>
 
 				<?php } ?>
 			</button>
 		</div>
-	<?php
+			<?php
 		}
 	}
-}// End if().
+}
 
 /**
  * Small Footer
@@ -201,6 +210,7 @@ if ( ! function_exists( 'astra_footer_small_footer_template' ) ) {
 	function astra_footer_small_footer_template() {
 
 		$small_footer_layout = astra_get_option_meta( 'footer-sml-layout', 'footer-sml-layout-2' );
+		$small_footer_layout = apply_filters( 'ast_footer_sml_layout', $small_footer_layout );
 
 		if ( 'disabled' != $small_footer_layout ) {
 
@@ -324,5 +334,28 @@ if ( ! function_exists( 'astra_advanced_footer_markup' ) ) {
 
 		// Add markup.
 		get_template_part( 'template-parts/advanced-footer/layout-4' );
+	}
+}
+
+
+/**
+ * Header menu item outside custom menu
+ */
+if ( ! function_exists( 'astra_header_custom_item_outside_menu' ) ) {
+
+	/**
+	 * Footer widgets markup
+	 *
+	 * Loads appropriate template file based on the style option selected in options panel.
+	 *
+	 * @since 1.0.12
+	 */
+	function astra_header_custom_item_outside_menu() {
+
+		if ( astra_get_option( 'header-display-outside-menu' ) ) {
+			$markup = astra_masthead_get_menu_items( true );
+
+			echo $markup;
+		}
 	}
 }

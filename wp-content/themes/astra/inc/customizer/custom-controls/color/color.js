@@ -6,7 +6,7 @@
  * @package Astra
  */
 
-jQuery(window).load(function() {
+jQuery(window).on("load", function() {
   	jQuery('html').addClass('colorpicker-ready');
 });
 
@@ -43,7 +43,7 @@ jQuery(window).load(function() {
 			     * button.
 			     */
 			    clear: function (event) {
-			        var element = jQuery(event.target).siblings('.wp-color-picker')[0];
+			        var element = jQuery(event.target).closest('.wp-picker-input-wrap').find('.wp-color-picker')[0];
 			        var color = '';
 
 			        if (element) {

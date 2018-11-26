@@ -55,6 +55,11 @@ if ( ! function_exists( 'astra_single_post_class' ) ) {
 		// Blog layout.
 		if ( is_singular() ) {
 			$classes[] = 'ast-article-single';
+
+			// Remove hentry from page.
+			if ( 'page' == get_post_type() ) {
+				$classes = array_diff( $classes, array( 'hentry' ) );
+			}
 		}
 
 		return $classes;
@@ -80,7 +85,7 @@ if ( ! function_exists( 'astra_single_get_post_meta' ) ) {
 		$post_meta   = astra_get_option( 'blog-single-meta' );
 
 		$output = '';
-		if ( is_array( $post_meta ) && 'post' == get_post_type() && $enable_meta ) {
+		if ( is_array( $post_meta ) && ( 'post' == get_post_type() || 'attachment' == get_post_type() ) && $enable_meta ) {
 
 			$output_str = astra_get_post_meta( $post_meta );
 			if ( ! empty( $output_str ) ) {
@@ -120,7 +125,7 @@ if ( ! function_exists( 'astra_theme_comment' ) ) {
 			case 'pingback':
 			case 'trackback':
 				// Display trackbacks differently than normal comments.
-			?>
+				?>
 				<li <?php comment_class(); ?> id="comment-<?php comment_ID(); ?>">
 					<p><?php esc_html_e( 'Pingback:', 'astra' ); ?> <?php comment_author_link(); ?> <?php edit_comment_link( __( '(Edit)', 'astra' ), '<span class="edit-link">', '</span>' ); ?></p>
 				</li>
@@ -167,13 +172,14 @@ if ( ! function_exists( 'astra_theme_comment' ) ) {
 									<?php
 									comment_reply_link(
 										array_merge(
-											$args, array(
+											$args,
+											array(
 												'reply_text' => astra_default_strings( 'string-comment-reply-link', false ),
 												'add_below' => 'comment',
-												'depth'     => $depth,
+												'depth'  => $depth,
 												'max_depth' => $args['max_depth'],
-												'before'    => '<span class="ast-reply-link">',
-												'after'     => '</span>',
+												'before' => '<span class="ast-reply-link">',
+												'after'  => '</span>',
 											)
 										)
 									);
@@ -188,9 +194,9 @@ if ( ! function_exists( 'astra_theme_comment' ) ) {
 				<!-- </li> -->
 				<?php
 				break;
-		} // End switch().
+		}
 	}
-}// End if().
+}
 
 /**
  * Get Post Navigation
@@ -206,7 +212,7 @@ if ( ! function_exists( 'astra_single_post_navigation_markup' ) ) {
 	 */
 	function astra_single_post_navigation_markup() {
 
-		$single_post_navigation_enabled = apply_filters( 'astra_sigle_post_navigation_enabled', true );
+		$single_post_navigation_enabled = apply_filters( 'astra_single_post_navigation_enabled', true );
 
 		if ( is_single() && $single_post_navigation_enabled ) {
 
@@ -226,7 +232,8 @@ if ( ! function_exists( 'astra_single_post_navigation_markup' ) ) {
 			 */
 			the_post_navigation(
 				apply_filters(
-					'astra_single_post_navigation', array(
+					'astra_single_post_navigation',
+					array(
 						'next_text' => $next_text,
 						'prev_text' => $prev_text,
 					)

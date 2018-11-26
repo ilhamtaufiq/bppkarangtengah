@@ -2,23 +2,23 @@
 /**
  * Astra functions and definitions.
  * Text Domain: astra
- * When using a child theme (see http://codex.wordpress.org/Theme_Development
- * and http://codex.wordpress.org/Child_Themes), you can override certain
+ * When using a child theme (see https://codex.wordpress.org/Theme_Development
+ * and https://codex.wordpress.org/Child_Themes), you can override certain
  * functions (those wrapped in a function_exists() call) by defining them first
  * in your child theme's functions.php file. The child theme's functions.php
  * file is included before the parent theme's file, so the child theme
  * functions would be used.
  *
  * For more information on hooks, actions, and filters,
- * see http://codex.wordpress.org/Plugin_API
+ * see https://codex.wordpress.org/Plugin_API
  *
  * Astra is a very powerful theme and virtually anything can be customized
  * via a child theme.
  *
  * @package     Astra
  * @author      Astra
- * @copyright   Copyright (c) 2017, Astra
- * @link        http://wpastra.com/
+ * @copyright   Copyright (c) 2018, Astra
+ * @link        https://wpastra.com/
  * @since       Astra 1.0.0
  */
 
@@ -49,7 +49,7 @@ if ( ! class_exists( 'Astra_After_Setup_Theme' ) ) {
 		 */
 		public static function get_instance() {
 			if ( ! isset( self::$instance ) ) {
-				self::$instance = new self;
+				self::$instance = new self();
 			}
 			return self::$instance;
 		}
@@ -58,7 +58,8 @@ if ( ! class_exists( 'Astra_After_Setup_Theme' ) ) {
 		 * Constructor
 		 */
 		public function __construct() {
-			add_action( 'after_setup_theme', array( $this, 'setup_theme' ),     2 );
+			add_action( 'after_setup_theme', array( $this, 'setup_theme' ), 2 );
+			add_action( 'template_redirect', array( $this, 'setup_content_width' ) );
 		}
 
 		/**
@@ -66,16 +67,9 @@ if ( ! class_exists( 'Astra_After_Setup_Theme' ) ) {
 		 *
 		 * @since 1.0.0
 		 */
-		function setup_theme() {
+		public function setup_theme() {
 
 			do_action( 'astra_class_loaded' );
-
-			/**
-			  * Content Width
-			  */
-			if ( ! isset( $content_width ) ) {
-				$content_width = apply_filters( 'astra_content_width', 700 );
-			}
 
 			/**
 			 * Make theme available for translation.
@@ -89,6 +83,9 @@ if ( ! class_exists( 'Astra_After_Setup_Theme' ) ) {
 			 * Theme Support
 			 */
 
+			// Gutenberg wide images.
+			add_theme_support( 'align-wide' );
+
 			// Add default posts and comments RSS feed links to head.
 			add_theme_support( 'automatic-feed-links' );
 
@@ -101,7 +98,8 @@ if ( ! class_exists( 'Astra_After_Setup_Theme' ) ) {
 			// Switch default core markup for search form, comment form, and comments.
 			// to output valid HTML5.
 			add_theme_support(
-				'html5', array(
+				'html5',
+				array(
 					'search-form',
 					'gallery',
 					'caption',
@@ -110,7 +108,8 @@ if ( ! class_exists( 'Astra_After_Setup_Theme' ) ) {
 
 			// Post formats.
 			add_theme_support(
-				'post-formats', array(
+				'post-formats',
+				array(
 					'gallery',
 					'image',
 					'link',
@@ -124,7 +123,8 @@ if ( ! class_exists( 'Astra_After_Setup_Theme' ) ) {
 
 			// Add theme support for Custom Logo.
 			add_theme_support(
-				'custom-logo', array(
+				'custom-logo',
+				array(
 					'width'       => 180,
 					'height'      => 60,
 					'flex-width'  => true,
@@ -142,27 +142,87 @@ if ( ! class_exists( 'Astra_After_Setup_Theme' ) ) {
 			/* Directory and Extension */
 			$dir_name    = ( SCRIPT_DEBUG ) ? 'unminified' : 'minified';
 			$file_prefix = ( SCRIPT_DEBUG ) ? '' : '.min';
-			add_editor_style( 'assets/css/' . $dir_name . '/editor-style' . $file_prefix . '.css' );
+			if ( apply_filters( 'astra_theme_editor_style', true ) ) {
+				add_editor_style( 'assets/css/' . $dir_name . '/editor-style' . $file_prefix . '.css' );
+			}
 
 			if ( apply_filters( 'astra_fullwidth_oembed', true ) ) {
 				// Filters the oEmbed process to run the responsive_oembed_wrapper() function.
 				add_filter( 'embed_oembed_html', array( $this, 'responsive_oembed_wrapper' ), 10, 3 );
 			}
+
+			// WooCommerce.
+			add_theme_support( 'woocommerce' );
+		}
+
+		/**
+		 * Set the $content_width global variable used by WordPress to set image dimennsions.
+		 *
+		 * @since 1.5.5
+		 * @return void
+		 */
+		public function setup_content_width() {
+			global $content_width;
+
+			/**
+			 * Content Width
+			 */
+			if ( ! isset( $content_width ) ) {
+
+				if ( is_home() || is_post_type_archive( 'post' ) ) {
+					$blog_width = astra_get_option( 'blog-width' );
+
+					if ( 'custom' === $blog_width ) {
+						$content_width = apply_filters( 'astra_content_width', astra_get_option( 'blog-max-width', 1200 ) );
+					}
+				} elseif ( is_single() ) {
+
+					$single_post_max = astra_get_option( 'blog-single-width' );
+
+					if ( 'custom' === $single_post_max ) {
+						$content_width = apply_filters( 'astra_content_width', astra_get_option( 'blog-single-max-width', 1200 ) );
+					}
+				} else {
+					$content_width = apply_filters( 'astra_content_width', astra_get_option( 'site-content-width', 1200 ) );
+				}
+			}
+
 		}
 
 		/**
 		 * Adds a responsive embed wrapper around oEmbed content
 		 *
 		 * @param  string $html The oEmbed markup.
-		 * @param  string $url  The URL being embedded.
+		 * @param  string $url The URL being embedded.
 		 * @param  array  $attr An array of attributes.
+		 *
 		 * @return string       Updated embed markup.
 		 */
-		function responsive_oembed_wrapper( $html, $url, $attr ) {
-			return '' !== $html ? '<div class="ast-oembed-container">' . $html . '</div>' : '';
+		public function responsive_oembed_wrapper( $html, $url, $attr ) {
+
+			$add_astra_oembed_wrapper = apply_filters( 'astra_responsive_oembed_wrapper_enable', true );
+
+			$allowed_providers = apply_filters(
+				'astra_allowed_fullwidth_oembed_providers',
+				array(
+					'vimeo.com',
+					'youtube.com',
+					'youtu.be',
+					'wistia.com',
+					'wistia.net',
+				)
+			);
+
+			if ( astra_strposa( $url, $allowed_providers ) ) {
+				if ( $add_astra_oembed_wrapper ) {
+					$html = ( '' !== $html ) ? '<div class="ast-oembed-container">' . $html . '</div>' : '';
+				}
+			}
+
+			return $html;
 		}
 	}
-}// End if().
+}
 
 /**
  * Kicking this off by calling 'get_instance()' method

@@ -4,8 +4,8 @@
  *
  * @package     Astra
  * @author      Astra
- * @copyright   Copyright (c) 2017, Astra
- * @link        http://wpastra.com/
+ * @copyright   Copyright (c) 2018, Astra
+ * @link        https://wpastra.com/
  * @since       Astra 1.0.0
  */
 
@@ -26,26 +26,26 @@ if ( ! function_exists( 'astra_get_foreground_color' ) ) {
 	 */
 	function astra_get_foreground_color( $hex ) {
 
+		// bail early if color's not set.
 		if ( 'transparent' == $hex || 'false' == $hex || '#' == $hex || empty( $hex ) ) {
 			return 'transparent';
 
-		} else {
-
-			// Get clean hex code.
-			$hex = str_replace( '#', '', $hex );
-
-			if ( 3 == strlen( $hex ) ) {
-				$hex = str_repeat( substr( $hex,0,1 ), 2 ) . str_repeat( substr( $hex,1,1 ), 2 ) . str_repeat( substr( $hex,2,1 ), 2 );
-			}
-
-			// Get r, g & b codes from hex code.
-			$r   = hexdec( substr( $hex,0,2 ) );
-			$g   = hexdec( substr( $hex,2,2 ) );
-			$b   = hexdec( substr( $hex,4,2 ) );
-			$hex = ( ( $r * 299 ) + ( $g * 587 ) + ( $b * 114 ) ) / 1000;
-
-			return 128 <= $hex ? '#000000' : '#ffffff';
 		}
+
+		// Get clean hex code.
+		$hex = str_replace( '#', '', $hex );
+
+		if ( 3 == strlen( $hex ) ) {
+			$hex = str_repeat( substr( $hex, 0, 1 ), 2 ) . str_repeat( substr( $hex, 1, 1 ), 2 ) . str_repeat( substr( $hex, 2, 1 ), 2 );
+		}
+
+		// Get r, g & b codes from hex code.
+		$r   = hexdec( substr( $hex, 0, 2 ) );
+		$g   = hexdec( substr( $hex, 2, 2 ) );
+		$b   = hexdec( substr( $hex, 4, 2 ) );
+		$hex = ( ( $r * 299 ) + ( $g * 587 ) + ( $b * 114 ) ) / 1000;
+
+		return 128 <= $hex ? '#000000' : '#ffffff';
 	}
 }
 
@@ -114,7 +114,7 @@ if ( ! function_exists( 'astra_responsive_font' ) ) {
 
 		return $font_size;
 	}
-}// End if().
+}
 
 /**
  * Get Font Size value
@@ -173,7 +173,7 @@ if ( ! function_exists( 'astra_get_font_css_value' ) ) {
 
 		return $css_val;
 	}
-}// End if().
+}
 
 /**
  * Get Font family
@@ -242,16 +242,15 @@ if ( ! function_exists( 'astra_get_css_value' ) ) {
 			case 'font':
 				if ( 'inherit' != $value ) {
 					$value   = astra_get_font_family( $value );
-					$css_val = esc_attr( $value );
+					$css_val = $value;
 				} elseif ( '' != $default ) {
-					$css_val = esc_attr( $default );
+					$css_val = $default;
 				}
-
 				break;
 
 			case 'px':
 			case '%':
-						$value = ( '' != $value ) ? $value : $default;
+						$value   = ( '' != $value ) ? $value : $default;
 						$css_val = esc_attr( $value ) . $unit;
 				break;
 
@@ -283,11 +282,63 @@ if ( ! function_exists( 'astra_get_css_value' ) ) {
 				if ( '' != $value ) {
 					$css_val = esc_attr( $value ) . $unit;
 				}
-		}// End switch().
+		}
 
 		return $css_val;
 	}
-}// End if().
+}
+
+/**
+ * Adjust the background obj.
+ */
+if ( ! function_exists( 'astra_get_background_obj' ) ) {
+
+	/**
+	 * Adjust Brightness
+	 *
+	 * @param  array $bg_obj   Color code in HEX.
+	 *
+	 * @return array         Color code in HEX.
+	 */
+	function astra_get_background_obj( $bg_obj ) {
+
+		$gen_bg_css = array();
+
+		$bg_img   = isset( $bg_obj['background-image'] ) ? $bg_obj['background-image'] : '';
+		$bg_color = isset( $bg_obj['background-color'] ) ? $bg_obj['background-color'] : '';
+
+		if ( '' !== $bg_img && '' !== $bg_color ) {
+			$gen_bg_css = array(
+				'background-color' => 'unset',
+				'background-image' => 'linear-gradient(to right, ' . esc_attr( $bg_color ) . ', ' . esc_attr( $bg_color ) . '), url(' . esc_url( $bg_img ) . ')',
+			);
+		} elseif ( '' !== $bg_img ) {
+			$gen_bg_css = array( 'background-image' => 'url(' . esc_url( $bg_img ) . ')' );
+		} elseif ( '' !== $bg_color ) {
+			$gen_bg_css = array( 'background-color' => esc_attr( $bg_color ) );
+		}
+
+		if ( '' !== $bg_img ) {
+			if ( isset( $bg_obj['background-repeat'] ) ) {
+				$gen_bg_css['background-repeat'] = esc_attr( $bg_obj['background-repeat'] );
+			}
+
+			if ( isset( $bg_obj['background-position'] ) ) {
+				$gen_bg_css['background-position'] = esc_attr( $bg_obj['background-position'] );
+			}
+
+			if ( isset( $bg_obj['background-size'] ) ) {
+				$gen_bg_css['background-size'] = esc_attr( $bg_obj['background-size'] );
+			}
+
+			if ( isset( $bg_obj['background-attachment'] ) ) {
+				$gen_bg_css['background-attachment'] = esc_attr( $bg_obj['background-attachment'] );
+			}
+		}
+
+		return $gen_bg_css;
+	}
+}
 
 /**
  * Parse CSS
@@ -352,11 +403,11 @@ if ( ! function_exists( 'astra_parse_css' ) ) {
 
 				return $media_css;
 			}
-		}// End if().
+		}
 
 		return $parse_css;
 	}
-}// End if().
+}
 
 /**
  * Return Theme options.
@@ -396,7 +447,7 @@ if ( ! function_exists( 'astra_get_option' ) ) {
 		 * @since  1.0.20
 		 * @var Mixed.
 		 */
-		return apply_filters( "astra_get_option_{$option}", $value,  $option, $default );
+		return apply_filters( "astra_get_option_{$option}", $value, $option, $default );
 	}
 }
 
@@ -443,9 +494,9 @@ if ( ! function_exists( 'astra_get_option_meta' ) ) {
 		 * @since  1.0.20
 		 * @var Mixed.
 		 */
-		return apply_filters( "astra_get_option_meta_{$option_id}", $value,  $default, $default );
+		return apply_filters( "astra_get_option_meta_{$option_id}", $value, $default, $default );
 	}
-}// End if().
+}
 
 /**
  * Helper function to get the current post id.
@@ -540,7 +591,7 @@ if ( ! function_exists( 'astra_get_primary_class' ) ) {
 
 		return array_unique( $classes );
 	}
-}// End if().
+}
 
 /**
  * Display classes for secondary div
@@ -556,14 +607,14 @@ if ( ! function_exists( 'astra_secondary_class' ) ) {
 	function astra_secondary_class( $class = '' ) {
 
 		// Separates classes with a single space, collates classes for body element.
-		echo 'class="' . esc_attr( join( ' ', get_astra_secondary_class( $class ) ) ) . '"';
+		echo 'class="' . esc_attr( join( ' ', astra_get_secondary_class( $class ) ) ) . '"';
 	}
 }
 
 /**
  * Retrieve the classes for the secondary element as an array.
  */
-if ( ! function_exists( 'get_astra_secondary_class' ) ) {
+if ( ! function_exists( 'astra_get_secondary_class' ) ) {
 
 	/**
 	 * Retrieve the classes for the secondary element as an array.
@@ -571,7 +622,7 @@ if ( ! function_exists( 'get_astra_secondary_class' ) ) {
 	 * @param string|array $class One or more classes to add to the class list.
 	 * @return array        Return array of classes.
 	 */
-	function get_astra_secondary_class( $class = '' ) {
+	function astra_get_secondary_class( $class = '' ) {
 
 		// array of class names.
 		$classes = array();
@@ -600,7 +651,7 @@ if ( ! function_exists( 'get_astra_secondary_class' ) ) {
 
 		return array_unique( $classes );
 	}
-}// End if().
+}
 
 /**
  * Get post format
@@ -679,8 +730,8 @@ if ( ! function_exists( 'astra_the_title' ) ) {
 	 */
 	function astra_the_title( $before = '', $after = '', $post_id = 0, $echo = true ) {
 
-		$title = '';
-		$blog_post_title = astra_get_option( 'blog-post-structure' );
+		$title             = '';
+		$blog_post_title   = astra_get_option( 'blog-post-structure' );
 		$single_post_title = astra_get_option( 'blog-single-post-structure' );
 
 		if ( ( ( ! is_singular() && in_array( 'title-meta', $blog_post_title ) ) || ( is_single() && in_array( 'single-title-meta', $single_post_title ) ) || is_page() ) ) {
@@ -690,7 +741,7 @@ if ( ! function_exists( 'astra_the_title' ) ) {
 				$before = apply_filters( 'astra_the_title_before', $before );
 				$after  = apply_filters( 'astra_the_title_after', $after );
 
-				$title  = $before . $title . $after;
+				$title = $before . $title . $after;
 			}
 		}
 
@@ -725,13 +776,13 @@ if ( ! function_exists( 'astra_get_the_title' ) ) {
 		} else {
 			if ( is_front_page() && is_home() ) {
 				// Default homepage.
-				$title = apply_filters( 'astra_the_default_home_page_title', esc_html( 'Home', 'astra' ) );
+				$title = apply_filters( 'astra_the_default_home_page_title', esc_html__( 'Home', 'astra' ) );
 			} elseif ( is_home() ) {
 				// blog page.
 				$title = apply_filters( 'astra_the_blog_home_page_title', get_the_title( get_option( 'page_for_posts', true ) ) );
 			} elseif ( is_404() ) {
 				// for 404 page - title always display.
-				$title = apply_filters( 'astra_the_404_page_title', esc_html( 'This page doesn\'t seem to exist.', 'astra' ) );
+				$title = apply_filters( 'astra_the_404_page_title', esc_html__( 'This page doesn\'t seem to exist.', 'astra' ) );
 
 				// for search page - title always display.
 			} elseif ( is_search() ) {
@@ -741,7 +792,7 @@ if ( ! function_exists( 'astra_get_the_title' ) ) {
 
 			} elseif ( class_exists( 'WooCommerce' ) && is_shop() ) {
 
-				$title = woocommerce_page_title();
+				$title = woocommerce_page_title( false );
 
 			} elseif ( is_archive() ) {
 
@@ -757,7 +808,7 @@ if ( ! function_exists( 'astra_get_the_title' ) ) {
 			return $title;
 		}
 	}
-}// End if().
+}
 
 /**
  * Archive Page Title
@@ -778,41 +829,41 @@ if ( ! function_exists( 'astra_archive_page_info' ) ) {
 
 				<section class="ast-author-box ast-archive-description">
 					<div class="ast-author-bio">
-						 <h1 class='page-title ast-archive-title'><?php echo get_the_author(); ?></h1>
-						 <p><?php echo wp_kses_post( get_the_author_meta( 'description' ) ); ?></p>
+						<h1 class='page-title ast-archive-title'><?php echo get_the_author(); ?></h1>
+						<p><?php echo wp_kses_post( get_the_author_meta( 'description' ) ); ?></p>
 					</div>
 					<div class="ast-author-avatar">
-						<?php echo get_avatar( get_the_author_meta( 'email' ) , 120 ); ?>
+						<?php echo get_avatar( get_the_author_meta( 'email' ), 120 ); ?>
 					</div>
 				</section>
 
-			<?php
+				<?php
 
-			// Category.
+				// Category.
 			} elseif ( is_category() ) {
-			?>
+				?>
 
 				<section class="ast-archive-description">
 					<h1 class="page-title ast-archive-title"><?php echo single_cat_title(); ?></h1>
 					<?php the_archive_description(); ?>
 				</section>
 
-			<?php
+				<?php
 
-			// Tag.
+				// Tag.
 			} elseif ( is_tag() ) {
-			?>
+				?>
 
 				<section class="ast-archive-description">
 					<h1 class="page-title ast-archive-title"><?php echo single_tag_title(); ?></h1>
 					<?php the_archive_description(); ?>
 				</section>
 
-			<?php
+				<?php
 
-			// Search.
+				// Search.
 			} elseif ( is_search() ) {
-			?>
+				?>
 
 				<section class="ast-archive-description">
 					<?php
@@ -822,24 +873,24 @@ if ( ! function_exists( 'astra_archive_page_info' ) ) {
 					<h1 class="page-title ast-archive-title"> <?php echo $title; ?> </h1>
 				</section>
 
-			<?php
+				<?php
 
-			// Other.
+				// Other.
 			} else {
-			?>
+				?>
 
 				<section class="ast-archive-description">
 					<?php the_archive_title( '<h1 class="page-title ast-archive-title">', '</h1>' ); ?>
 					<?php the_archive_description(); ?>
 				</section>
 
-		<?php
-			}// End if().
-		}// End if().
+				<?php
+			}
+		}
 	}
 
 	add_action( 'astra_archive_header', 'astra_archive_page_info' );
-}// End if().
+}
 
 
 /**
@@ -858,12 +909,12 @@ if ( ! function_exists( 'astra_adjust_brightness' ) ) {
 	function astra_adjust_brightness( $hex, $steps, $type ) {
 
 		// Get rgb vars.
-		$hex = str_replace( '#','',$hex );
+		$hex = str_replace( '#', '', $hex );
 
 		$shortcode_atts = array(
-			'r' => hexdec( substr( $hex,0,2 ) ),
-			'g' => hexdec( substr( $hex,2,2 ) ),
-			'b' => hexdec( substr( $hex,4,2 ) ),
+			'r' => hexdec( substr( $hex, 0, 2 ) ),
+			'g' => hexdec( substr( $hex, 2, 2 ) ),
+			'b' => hexdec( substr( $hex, 4, 2 ) ),
 		);
 
 		// Should we darken the color?
@@ -876,9 +927,9 @@ if ( ! function_exists( 'astra_adjust_brightness' ) ) {
 		// Build the new color.
 		$steps = max( -255, min( 255, $steps ) );
 
-		$shortcode_atts['r']  = max( 0,min( 255,$shortcode_atts['r'] + $steps ) );
-		$shortcode_atts['g'] = max( 0,min( 255,$shortcode_atts['g'] + $steps ) );
-		$shortcode_atts['b'] = max( 0,min( 255,$shortcode_atts['b'] + $steps ) );
+		$shortcode_atts['r'] = max( 0, min( 255, $shortcode_atts['r'] + $steps ) );
+		$shortcode_atts['g'] = max( 0, min( 255, $shortcode_atts['g'] + $steps ) );
+		$shortcode_atts['b'] = max( 0, min( 255, $shortcode_atts['b'] + $steps ) );
 
 		$r_hex = str_pad( dechex( $shortcode_atts['r'] ), 2, '0', STR_PAD_LEFT );
 		$g_hex = str_pad( dechex( $shortcode_atts['g'] ), 2, '0', STR_PAD_LEFT );
@@ -886,5 +937,152 @@ if ( ! function_exists( 'astra_adjust_brightness' ) ) {
 
 		return '#' . $r_hex . $g_hex . $b_hex;
 	}
-}// End if().
+} // End if.
+
+/**
+ * Convert colors from HEX to RGBA
+ */
+if ( ! function_exists( 'astra_hex_to_rgba' ) ) :
+
+	/**
+	 * Convert colors from HEX to RGBA
+	 *
+	 * @param  string  $color   Color code in HEX.
+	 * @param  boolean $opacity Color code opacity.
+	 * @return string           Color code in RGB or RGBA.
+	 */
+	function astra_hex_to_rgba( $color, $opacity = false ) {
+
+		$default = 'rgb(0,0,0)';
+
+		// Return default if no color provided.
+		if ( empty( $color ) ) {
+			return $default;
+		}
+
+		// Sanitize $color if "#" is provided.
+		if ( '#' == $color[0] ) {
+			$color = substr( $color, 1 );
+		}
+
+		// Check if color has 6 or 3 characters and get values.
+		if ( 6 == strlen( $color ) ) {
+			$hex = array( $color[0] . $color[1], $color[2] . $color[3], $color[4] . $color[5] );
+		} elseif ( 3 == strlen( $color ) ) {
+			$hex = array( $color[0] . $color[0], $color[1] . $color[1], $color[2] . $color[2] );
+		} else {
+			return $default;
+		}
+
+		// Convert HEX to RGB.
+		$rgb = array_map( 'hexdec', $hex );
+
+		// Check if opacity is set(RGBA or RGB).
+		if ( $opacity ) {
+			if ( 1 < abs( $opacity ) ) {
+				$opacity = 1.0;
+			}
+			$output = 'rgba(' . implode( ',', $rgb ) . ',' . $opacity . ')';
+		} else {
+			$output = 'rgb(' . implode( ',', $rgb ) . ')';
+		}
+
+		// Return RGB(a) color string.
+		return $output;
+	}
+
+endif;
+
+
+if ( ! function_exists( 'astra_enable_page_builder_compatibility' ) ) :
+
+	/**
+	 * Allow filter to enable/disable page builder compatibility.
+	 *
+	 * @see  https://wpastra.com/docs/recommended-settings-beaver-builder-astra/
+	 * @see  https://wpastra.com/docs/recommended-settings-for-elementor/
+	 *
+	 * @since  1.2.2
+	 * @return  bool True - If the page builder compatibility is enabled. False - IF the page builder compatibility is disabled.
+	 */
+	function astra_enable_page_builder_compatibility() {
+		return apply_filters( 'astra_enable_page_builder_compatibility', true );
+	}
+
+endif;
+
+
+if ( ! function_exists( 'astra_get_pro_url' ) ) :
+	/**
+	 * Returns an URL with utm tags
+	 * the admin settings page.
+	 *
+	 * @param string $url    URL fo the site.
+	 * @param string $source utm source.
+	 * @param string $medium utm medium.
+	 * @param string $campaign utm campaign.
+	 * @return mixed
+	 */
+	function astra_get_pro_url( $url, $source = '', $medium = '', $campaign = '' ) {
+
+		$url = trailingslashit( $url );
+
+		// Set up our URL if we have a source.
+		if ( isset( $source ) ) {
+			$url = add_query_arg( 'utm_source', sanitize_text_field( $source ), $url );
+		}
+		// Set up our URL if we have a medium.
+		if ( isset( $medium ) ) {
+			$url = add_query_arg( 'utm_medium', sanitize_text_field( $medium ), $url );
+		}
+		// Set up our URL if we have a campaign.
+		if ( isset( $campaign ) ) {
+			$url = add_query_arg( 'utm_campaign', sanitize_text_field( $campaign ), $url );
+		}
+
+		return esc_url( $url );
+	}
+
+endif;
+
+
+/**
+ * Search Form
+ */
+if ( ! function_exists( 'astra_get_search_form' ) ) :
+	/**
+	 * Display search form.
+	 *
+	 * @param bool $echo Default to echo and not return the form.
+	 * @return string|void String when $echo is false.
+	 */
+	function astra_get_search_form( $echo = true ) {
+
+		$form = '<form role="search" method="get" class="search-form" action="' . esc_url( home_url( '/' ) ) . '">
+			<label>
+				<span class="screen-reader-text">' . _x( 'Search for:', 'label', 'astra' ) . '</span>
+				<input type="search" class="search-field" placeholder="' . esc_attr_x( 'Search &hellip;', 'placeholder', 'astra' ) . '" value="' . get_search_query() . '" name="s" />
+			</label>
+			<button type="submit" class="search-submit" value="' . esc_attr__( 'Search', 'astra' ) . '"><i class="astra-search-icon"></i></button>
+		</form>';
+
+		/**
+		 * Filters the HTML output of the search form.
+		 *
+		 * @param string $form The search form HTML output.
+		 */
+		$result = apply_filters( 'astra_get_search_form', $form );
+
+		if ( null === $result ) {
+			$result = $form;
+		}
+
+		if ( $echo ) {
+			echo $result;
+		} else {
+			return $result;
+		}
+	}
+
+endif;
 

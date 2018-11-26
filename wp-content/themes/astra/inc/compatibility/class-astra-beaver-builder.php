@@ -55,6 +55,10 @@ if ( ! class_exists( 'Astra_Beaver_Builder' ) ) :
 		 */
 		function beaver_builder_default_setting() {
 
+			if ( false == astra_enable_page_builder_compatibility() || 'post' == get_post_type() ) {
+				return;
+			}
+
 			global $post;
 			$id = astra_get_post_id();
 

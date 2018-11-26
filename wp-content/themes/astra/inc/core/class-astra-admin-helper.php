@@ -6,8 +6,8 @@
  *
  * @package     Astra
  * @author      Astra
- * @copyright   Copyright (c) 2017, Astra
- * @link        http://wpastra.com/
+ * @copyright   Copyright (c) 2018, Astra
+ * @link        https://wpastra.com/
  * @since       Astra 1.0
  */
 
@@ -76,6 +76,7 @@ if ( ! class_exists( 'Astra_Admin_Helper' ) ) :
 
 			return $value;
 		}
+
 	}
 
 

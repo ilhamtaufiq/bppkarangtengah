@@ -25,13 +25,18 @@ if ( ! function_exists( 'astra_get_post_meta' ) ) {
 		$output_str = '';
 		$loop_count = 1;
 
+		$separator = apply_filters( 'astra_post_meta_separator', $separator );
+
 		foreach ( $post_meta as $meta_value ) {
 
 			switch ( $meta_value ) {
 
 				case 'author':
-					$output_str .= ( 1 != $loop_count && '' != $output_str ) ? ' ' . $separator . ' ' : '';
-					$output_str .= esc_html( astra_default_strings( 'string-blog-meta-author-by', false ) ) . astra_post_author();
+					$author = get_the_author();
+					if ( ! empty( $author ) ) {
+						$output_str .= ( 1 != $loop_count && '' != $output_str ) ? ' ' . $separator . ' ' : '';
+						$output_str .= esc_html( astra_default_strings( 'string-blog-meta-author-by', false ) ) . astra_post_author();
+					}
 					break;
 
 				case 'date':
@@ -62,14 +67,17 @@ if ( ! function_exists( 'astra_get_post_meta' ) ) {
 						$output_str .= $comment;
 					}
 					break;
-			}// End switch().
+				default:
+					$output_str = apply_filters( 'astra_meta_case_' . $meta_value, $output_str, $loop_count, $separator );
+
+			}
 
 			$loop_count ++;
-		}// End foreach().
+		}
 
 		return $output_str;
 	}
-}// End if().
+}
 
 /**
  * Function to get Date of Post
@@ -86,17 +94,25 @@ if ( ! function_exists( 'astra_post_date' ) ) {
 	 */
 	function astra_post_date() {
 
-		$output = '';
-		$format = apply_filters( 'astra_post_date_format','' );
-		$time_string = esc_html( get_the_date( $format ) );
-		$posted_on = sprintf(
+		$output        = '';
+		$format        = apply_filters( 'astra_post_date_format', '' );
+		$time_string   = esc_html( get_the_date( $format ) );
+		$modified_date = esc_html( get_the_modified_date( $format ) );
+		$posted_on     = sprintf(
 			esc_html( '%s' ),
 			$time_string
 		);
-		$output .= '<span class="posted-on" itemprop="datePublished"> ' . $posted_on . '</span>';
+		$modified_on   = sprintf(
+			esc_html( '%s' ),
+			$modified_date
+		);
+		$output       .= '<span class="posted-on">';
+		$output       .= '<span class="published" itemprop="datePublished"> ' . $posted_on . '</span>';
+		$output       .= '<span class="updated" itemprop="dateModified"> ' . $modified_on . '</span>';
+		$output       .= '</span>';
 		return apply_filters( 'astra_post_date', $output );
 	}
-}// End if().
+}
 
 /**
  * Function to get Author of Post
@@ -113,14 +129,22 @@ if ( ! function_exists( 'astra_post_author' ) ) {
 	 * @return html                Markup.
 	 */
 	function astra_post_author( $output_filter = '' ) {
-		$output = '';
 
-		$byline = sprintf(
-			esc_html( '%s' ),
-			'<a class="url fn n" title="View all posts by ' . esc_attr( get_the_author() ) . '" href="' . esc_url( get_author_posts_url( get_the_author_meta( 'ID' ) ) ) . '" rel="author" itemprop="url"> <span class="author-name" itemprop="name">' . esc_html( get_the_author() ) . '</span> </a>'
-		);
+		ob_start();
 
-		$output .= '<span class="posted-by" itemtype="http://schema.org/Person" itemscope="itemscope" itemprop="author"> ' . $byline . '</span>';
+		?>
+
+		<span class="posted-by vcard author" itemtype="https://schema.org/Person" itemscope="itemscope" itemprop="author">
+			<?php // Translators: Author Name. ?>
+			<a class="url fn n" title="<?php printf( esc_attr__( 'View all posts by %1$s', 'astra' ), get_the_author() ); ?>" 
+				href="<?php echo get_author_posts_url( get_the_author_meta( 'ID' ) ); ?>" rel="author" itemprop="url">
+				<span class="author-name" itemprop="name"><?php echo get_the_author(); ?></span>
+			</a>
+		</span>
+
+		<?php
+
+		$output = ob_get_clean();
 
 		return apply_filters( 'astra_post_author', $output, $output_filter );
 	}
@@ -143,13 +167,16 @@ if ( ! function_exists( 'astra_post_link' ) ) {
 	function astra_post_link( $output_filter = '' ) {
 
 		$enabled = apply_filters( 'astra_post_link_enabled', '__return_true' );
-		if ( is_admin() || ! $enabled ) {
+		if ( ( is_admin() && ! wp_doing_ajax() ) || ! $enabled ) {
 			return $output_filter;
 		}
 
+		$read_more_text    = apply_filters( 'astra_post_read_more', __( 'Read More &raquo;', 'astra' ) );
+		$read_more_classes = apply_filters( 'astra_post_read_more_class', array() );
+
 		$post_link = sprintf(
 			esc_html( '%s' ),
-			'<a href="' . esc_url( get_permalink() ) . '"> ' . the_title( '<span class="screen-reader-text">', '</span>', false ) . __( 'Read More &raquo;', 'astra' ) . '</a>'
+			'<a class="' . esc_attr( implode( ' ', $read_more_classes ) ) . '" href="' . esc_url( get_permalink() ) . '"> ' . the_title( '<span class="screen-reader-text">', '</span>', false ) . ' ' . $read_more_text . '</a>'
 		);
 
 		$output = ' &hellip;<p class="read-more"> ' . $post_link . '</p>';
@@ -191,8 +218,8 @@ if ( ! function_exists( 'astra_post_comments' ) ) {
 				?>
 
 				<!-- Comment Schema Meta -->
-				<span itemprop="interactionStatistic" itemscope itemtype="http://schema.org/InteractionCounter">
-					<meta itemprop="interactionType" content="http://schema.org/CommentAction" />
+				<span itemprop="interactionStatistic" itemscope itemtype="https://schema.org/InteractionCounter">
+					<meta itemprop="interactionType" content="https://schema.org/CommentAction" />
 					<meta itemprop="userInteractionCount" content="<?php echo absint( wp_count_comments( get_the_ID() )->approved ); ?>" />
 				</span>
 			</span>
@@ -204,7 +231,7 @@ if ( ! function_exists( 'astra_post_comments' ) ) {
 
 		return apply_filters( 'astra_post_comments', $output, $output_filter );
 	}
-}// End if().
+}
 
 /**
  * Function to get Tags applied of Post
@@ -225,13 +252,10 @@ if ( ! function_exists( 'astra_post_tags' ) ) {
 		$output = '';
 
 		/* translators: used between list items, there is a space after the comma */
-		$tags_list = get_the_tag_list( '', esc_html__( ', ', 'astra' ) );
-		if ( $tags_list ) {
-			$tags = sprintf( // WPCS: XSS OK.
-				esc_html( '%1$s' ), $tags_list
-			);
+		$tags_list = get_the_tag_list( '', __( ', ', 'astra' ) );
 
-			$output .= '<span class="tags-links">' . $tags . '</span>';
+		if ( $tags_list ) {
+			$output .= '<span class="tags-links">' . $tags_list . '</span>';
 		}
 
 		return apply_filters( 'astra_post_tags', $output, $output_filter );
@@ -257,14 +281,10 @@ if ( ! function_exists( 'astra_post_categories' ) ) {
 		$output = '';
 
 		/* translators: used between list items, there is a space after the comma */
-		$categories_list = get_the_category_list( esc_html__( ', ', 'astra' ) );
+		$categories_list = get_the_category_list( __( ', ', 'astra' ) );
 
 		if ( $categories_list ) {
-			$categories = sprintf(
-				esc_html( '%1$s' ), $categories_list
-			);
-
-			$output .= '<span class="cat-links">' . $categories . '</span>';
+			$output .= '<span class="cat-links">' . $categories_list . '</span>';
 		}
 
 		return apply_filters( 'astra_post_categories', $output, $output_filter );
@@ -314,7 +334,7 @@ if ( ! function_exists( 'astra_get_blog_layout_class' ) ) {
 			$post_format = 'standard';
 		}
 
-		$classes[]   = 'ast-post-format-' . $post_format;
+		$classes[] = 'ast-post-format-' . $post_format;
 
 		if ( ! has_post_thumbnail() || ! wp_get_attachment_image_src( get_post_thumbnail_id() ) ) {
 			switch ( $post_format ) {
@@ -367,8 +387,8 @@ if ( ! function_exists( 'astra_get_blog_layout_class' ) ) {
 						$classes[] = 'ast-no-thumb';
 					}
 					break;
-			}// End switch().
-		}// End if().
+			}
+		}
 
 		if ( ! empty( $class ) ) {
 			if ( ! is_array( $class ) ) {
@@ -389,4 +409,41 @@ if ( ! function_exists( 'astra_get_blog_layout_class' ) ) {
 
 		return array_unique( $classes );
 	}
-}// End if().
+}
+
+/**
+ * Function to get Content Read More Link of Post
+ *
+ * @since 1.2.7
+ * @return html
+ */
+if ( ! function_exists( 'astra_the_content_more_link' ) ) {
+
+	/**
+	 * Filters the Read More link text.
+	 *
+	 * @param  string $more_link_element Read More link element.
+	 * @param  string $more_link_text Read More text.
+	 * @return html                Markup.
+	 */
+	function astra_the_content_more_link( $more_link_element = '', $more_link_text = '' ) {
+
+		$enabled = apply_filters( 'astra_the_content_more_link_enabled', '__return_true' );
+		if ( ( is_admin() && ! wp_doing_ajax() ) || ! $enabled ) {
+			return $more_link_element;
+		}
+
+		$more_link_text    = apply_filters( 'astra_the_content_more_string', __( 'Read More &raquo;', 'astra' ) );
+		$read_more_classes = apply_filters( 'astra_the_content_more_link_class', array() );
+
+		$post_link = sprintf(
+			esc_html( '%s' ),
+			'<a class="' . esc_attr( implode( ' ', $read_more_classes ) ) . '" href="' . esc_url( get_permalink() ) . '"> ' . the_title( '<span class="screen-reader-text">', '</span>', false ) . $more_link_text . '</a>'
+		);
+
+		$more_link_element = ' &hellip;<p class="ast-the-content-more-link"> ' . $post_link . '</p>';
+
+		return apply_filters( 'astra_the_content_more_link', $more_link_element, $more_link_text );
+	}
+}
+add_filter( 'the_content_more_link', 'astra_the_content_more_link', 10, 2 );

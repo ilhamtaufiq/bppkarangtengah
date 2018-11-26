@@ -4,8 +4,8 @@
  *
  * @package     Astra
  * @author      Astra
- * @copyright   Copyright (c) 2017, Astra
- * @link        http://wpastra.com/
+ * @copyright   Copyright (c) 2018, Astra
+ * @link        https://wpastra.com/
  * @since       Astra 1.0.19
  */
 
@@ -137,23 +137,25 @@ if ( ! class_exists( 'Astra_Font_Families' ) ) :
 
 				global $wp_filesystem;
 				if ( empty( $wp_filesystem ) ) {
-					require_once( ABSPATH . '/wp-admin/includes/file.php' );
+					require_once ABSPATH . '/wp-admin/includes/file.php';
 					WP_Filesystem();
 				}
 
-				$file_contants      = $wp_filesystem->get_contents( $google_fonts_file );
-				$google_fonts_json  = json_decode( $file_contants, 1 );
+				$file_contants     = $wp_filesystem->get_contents( $google_fonts_file );
+				$google_fonts_json = json_decode( $file_contants, 1 );
 
 				foreach ( $google_fonts_json as $key => $font ) {
 					$name = key( $font );
-					foreach ( $font[ $name ] as $font_key => $variant ) {
+					foreach ( $font[ $name ] as $font_key => $single_font ) {
 
-						if ( stristr( $variant, 'italic' ) ) {
-							unset( $font[ $name ][ $font_key ] );
-						}
+						if ( 'variants' === $font_key ) {
 
-						if ( 'regular' == $variant ) {
-							$font[ $name ][ $font_key ] = '400';
+							foreach ( $single_font as $variant_key => $variant ) {
+
+								if ( 'regular' == $variant ) {
+									$font[ $name ][ $font_key ][ $variant_key ] = '400';
+								}
+							}
 						}
 
 						self::$google_fonts[ $name ] = array_values( $font[ $name ] );

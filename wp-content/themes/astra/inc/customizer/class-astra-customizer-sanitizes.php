@@ -4,8 +4,8 @@
  *
  * @package     Astra
  * @author      Astra
- * @copyright   Copyright (c) 2017, Astra
- * @link        http://wpastra.com/
+ * @copyright   Copyright (c) 2018, Astra
+ * @link        https://wpastra.com/
  * @since       Astra 1.0.0
  */
 
@@ -72,7 +72,7 @@ if ( ! class_exists( 'Astra_Customizer_Sanitizes' ) ) {
 
 			if ( isset( $input_attrs ) ) {
 
-				$input_attrs['min'] = isset( $input_attrs['min'] ) ? $input_attrs['min'] : 0;
+				$input_attrs['min']  = isset( $input_attrs['min'] ) ? $input_attrs['min'] : 0;
 				$input_attrs['step'] = isset( $input_attrs['step'] ) ? $input_attrs['step'] : 1;
 
 				if ( isset( $input_attrs['max'] ) && $val > $input_attrs['max'] ) {
@@ -116,17 +116,131 @@ if ( ! class_exists( 'Astra_Customizer_Sanitizes' ) ) {
 		static public function sanitize_spacing( $val ) {
 
 			foreach ( $val as $key => $value ) {
-				$val[ $key ] = is_numeric( $val[ $key ] ) ? $val[ $key ] : '';
+				$val[ $key ] = ( is_numeric( $val[ $key ] ) && $val[ $key ] >= 0 ) ? $val[ $key ] : '';
 			}
 
 			return $val;
 		}
 
 		/**
-		 * Sanitize Responsive Typography
+		 * Sanitize responsive  Spacing
 		 *
 		 * @param  number $val Customizer setting input number.
 		 * @return number        Return number.
+		 * @since  1.2.1
+		 */
+		static public function sanitize_responsive_spacing( $val ) {
+
+			$spacing = array(
+				'desktop'      => array(
+					'top'    => '',
+					'right'  => '',
+					'bottom' => '',
+					'left'   => '',
+				),
+				'tablet'       => array(
+					'top'    => '',
+					'right'  => '',
+					'bottom' => '',
+					'left'   => '',
+				),
+				'mobile'       => array(
+					'top'    => '',
+					'right'  => '',
+					'bottom' => '',
+					'left'   => '',
+				),
+				'desktop-unit' => 'px',
+				'tablet-unit'  => 'px',
+				'mobile-unit'  => 'px',
+			);
+
+			if ( isset( $val['desktop'] ) ) {
+				$spacing['desktop'] = array_map(
+					function ( $value ) {
+							return ( is_numeric( $value ) && $value >= 0 ) ? $value : '';
+					},
+					$val['desktop']
+				);
+
+				$spacing['tablet'] = array_map(
+					function ( $value ) {
+							return ( is_numeric( $value ) && $value >= 0 ) ? $value : '';
+					},
+					$val['tablet']
+				);
+
+				$spacing['mobile'] = array_map(
+					function ( $value ) {
+							return ( is_numeric( $value ) && $value >= 0 ) ? $value : '';
+					},
+					$val['mobile']
+				);
+
+				if ( isset( $val['desktop-unit'] ) ) {
+					$spacing['desktop-unit'] = $val['desktop-unit'];
+				}
+
+				if ( isset( $val['tablet-unit'] ) ) {
+					$spacing['tablet-unit'] = $val['tablet-unit'];
+				}
+
+				if ( isset( $val['mobile-unit'] ) ) {
+					$spacing['mobile-unit'] = $val['mobile-unit'];
+				}
+
+				return $spacing;
+
+			} else {
+				foreach ( $val as $key => $value ) {
+					$val[ $key ] = is_numeric( $val[ $key ] ) ? $val[ $key ] : '';
+				}
+				return $val;
+			}
+
+		}
+
+		/**
+		 * Sanitize Responsive Slider
+		 *
+		 * @param  array|number $val Customizer setting input number.
+		 * @param  object       $setting Setting Onject.
+		 * @return array        Return number.
+		 */
+		static public function sanitize_responsive_slider( $val, $setting ) {
+
+			$input_attrs = array();
+			if ( isset( $setting->manager->get_control( $setting->id )->input_attrs ) ) {
+				$input_attrs = $setting->manager->get_control( $setting->id )->input_attrs;
+			}
+
+			$responsive = array(
+				'desktop' => '',
+				'tablet'  => '',
+				'mobile'  => '',
+			);
+			if ( is_array( $val ) ) {
+				$responsive['desktop'] = is_numeric( $val['desktop'] ) ? $val['desktop'] : '';
+				$responsive['tablet']  = is_numeric( $val['tablet'] ) ? $val['tablet'] : '';
+				$responsive['mobile']  = is_numeric( $val['mobile'] ) ? $val['mobile'] : '';
+			} else {
+				$responsive['desktop'] = is_numeric( $val ) ? $val : '';
+			}
+
+			foreach ( $responsive as $key => $value ) {
+					$value              = isset( $input_attrs['min'] ) && ( ! empty( $value ) ) && ( $input_attrs['min'] > $value ) ? $input_attrs['min'] : $value;
+					$value              = isset( $input_attrs['max'] ) && ( ! empty( $value ) ) && ( $input_attrs['max'] < $value ) ? $input_attrs['max'] : $value;
+					$responsive[ $key ] = $value;
+			}
+
+			return $responsive;
+		}
+
+		/**
+		 * Sanitize Responsive Typography
+		 *
+		 * @param  array|number $val Customizer setting input number.
+		 * @return array        Return number.
 		 */
 		static public function sanitize_responsive_typo( $val ) {
 
@@ -308,7 +422,7 @@ if ( ! class_exists( 'Astra_Customizer_Sanitizes' ) ) {
 
 			// Get list of choices from the control
 			// associated with the setting.
-			$choices = $setting->manager->get_control( $setting->id )->choices;
+			$choices    = $setting->manager->get_control( $setting->id )->choices;
 			$input_keys = $input;
 
 			foreach ( $input_keys as $key => $value ) {
@@ -371,8 +485,81 @@ if ( ! class_exists( 'Astra_Customizer_Sanitizes' ) ) {
 				return 'normal';
 			}
 		}
+
+		/**
+		 * Sanitize Font variant
+		 *
+		 * @param  mixed $input setting input.
+		 * @return mixed        setting input value.
+		 */
+		static public function sanitize_font_variant( $input ) {
+
+			if ( is_array( $input ) ) {
+				$input = implode( ',', $input );
+			}
+			return sanitize_text_field( $input );
+		}
+
+		/**
+		 * Sanitize Background Obj
+		 *
+		 * @param  mixed $bg_obj setting input.
+		 * @return array        setting input value.
+		 */
+		static public function sanitize_background_obj( $bg_obj ) {
+
+			$out_bg_obj = array(
+				'background-color'      => '',
+				'background-image'      => '',
+				'background-repeat'     => 'repeat',
+				'background-position'   => 'center center',
+				'background-size'       => 'auto',
+				'background-attachment' => 'scroll',
+			);
+
+			if ( is_array( $bg_obj ) ) {
+
+				foreach ( $out_bg_obj as $key => $value ) {
+
+					if ( isset( $bg_obj[ $key ] ) ) {
+
+						if ( 'background-image' === $key ) {
+							$out_bg_obj[ $key ] = esc_url_raw( $bg_obj[ $key ] );
+						} else {
+							$out_bg_obj[ $key ] = esc_attr( $bg_obj[ $key ] );
+						}
+					}
+				}
+			}
+
+			return $out_bg_obj;
+		}
+
+		/**
+		 * Sanitize Border Typography
+		 *
+		 * @since 1.4.0
+		 * @param  array|number $val Customizer setting input number.
+		 * @return array        Return number.
+		 */
+		static public function sanitize_border( $val ) {
+
+			$border = array(
+				'top'    => '',
+				'right'  => '',
+				'bottom' => '',
+				'left'   => '',
+			);
+			if ( is_array( $val ) ) {
+				$border['top']    = is_numeric( $val['top'] ) ? $val['top'] : '';
+				$border['right']  = is_numeric( $val['right'] ) ? $val['right'] : '';
+				$border['bottom'] = is_numeric( $val['bottom'] ) ? $val['bottom'] : '';
+				$border['left']   = is_numeric( $val['left'] ) ? $val['left'] : '';
+			}
+			return $border;
+		}
 	}
-}// End if().
+}
 
 /**
  * Kicking this off by calling 'get_instance()' method

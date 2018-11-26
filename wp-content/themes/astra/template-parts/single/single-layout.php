@@ -4,8 +4,8 @@
  *
  * @package     Astra
  * @author      Astra
- * @copyright   Copyright (c) 2017, Astra
- * @link        http://wpastra.com/
+ * @copyright   Copyright (c) 2018, Astra
+ * @link        https://wpastra.com/
  * @since       Astra 1.0.0
  */
 
@@ -19,7 +19,7 @@
 
 		<?php astra_single_header_top(); ?>
 
-		<?php astra_blog_post_thumbnai_and_title_order(); ?>
+		<?php astra_blog_post_thumbnail_and_title_order(); ?>
 
 		<?php astra_single_header_bottom(); ?>
 
@@ -44,7 +44,7 @@
 				'<span class="edit-link">',
 				'</span>'
 			);
-		?>
+			?>
 
 		<?php astra_entry_content_after(); ?>
 
@@ -57,6 +57,6 @@
 					'link_after'  => '</span>',
 				)
 			);
-		?>
+			?>
 	</div><!-- .entry-content .clear -->
 </div>

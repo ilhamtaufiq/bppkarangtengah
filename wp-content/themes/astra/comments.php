@@ -22,19 +22,24 @@ if ( post_password_required() ) {
 ?>
 
 <div id="comments" class="comments-area">
-	
+
 	<?php astra_comments_before(); ?>
 
-	
 	<?php if ( have_comments() ) : ?>
 		<div class="comments-count-wrapper">
 			<h3 class="comments-title">
 				<?php
-					printf( // WPCS: XSS OK.
+				$comments_title = apply_filters(
+					'astra_comment_form_title',
+					sprintf( // WPCS: XSS OK.
 						/* translators: 1: number of comments */
 						esc_html( _nx( '%1$s thought on &ldquo;%2$s&rdquo;', '%1$s thoughts on &ldquo;%2$s&rdquo;', get_comments_number(), 'comments title', 'astra' ) ),
-						number_format_i18n( get_comments_number() ), get_the_title()
-					);
+						number_format_i18n( get_comments_number() ),
+						get_the_title()
+					)
+				);
+
+				echo esc_html( $comments_title );
 				?>
 			</h3>
 		</div>
@@ -56,7 +61,7 @@ if ( post_password_required() ) {
 			wp_list_comments(
 				array(
 					'callback' => 'astra_theme_comment',
-					'style' => 'ol',
+					'style'    => 'ol',
 				)
 			);
 			?>
@@ -79,7 +84,7 @@ if ( post_password_required() ) {
 	<?php
 		// If comments are closed and there are comments, let's leave a little note, shall we?
 	if ( ! comments_open() && get_comments_number() && post_type_supports( get_post_type(), 'comments' ) ) :
-	?>
+		?>
 		<p class="no-comments"><?php echo esc_html( astra_default_strings( 'string-comment-closed', false ) ); ?></p>
 	<?php endif; ?>
 

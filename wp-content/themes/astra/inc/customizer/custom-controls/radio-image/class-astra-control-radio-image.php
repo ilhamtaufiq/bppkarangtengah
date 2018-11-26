@@ -4,8 +4,8 @@
  *
  * @package     Astra
  * @author      Astra
- * @copyright   Copyright (c) 2017, Astra
- * @link        http://wpastra.com/
+ * @copyright   Copyright (c) 2018, Astra
+ * @link        https://wpastra.com/
  * @since       1.0.0
  */
 
@@ -55,7 +55,7 @@ class Astra_Control_Radio_Image extends WP_Customize_Control {
 		$this->json['value'] = $this->value();
 
 		foreach ( $this->choices as $key => $value ) {
-			$this->json['choices'][ $key ]  = esc_url( $value['path'] );
+			$this->json['choices'][ $key ]        = esc_url( $value['path'] );
 			$this->json['choices_titles'][ $key ] = $value['label'];
 		}
 
